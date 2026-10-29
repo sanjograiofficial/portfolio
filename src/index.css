@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+.main-body {
+  background-image: "url('/background.jpg')";
+}
