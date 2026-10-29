@@ -1,4 +1,5 @@
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
 
 const Contact = () => {
   const [form, setForm] = useState({
@@ -7,22 +8,43 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  const [isSending, setIsSending] = useState(false);
+  const [status, setStatus] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSending(true);
+    setStatus("");
+
+    try {
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+        },
+        {
+          publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+        },
+      );
+
+      setStatus("Message sent successfully!");
+      setForm({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      setStatus("Failed to send message. Please try again.");
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const emailSubject = encodeURIComponent(form.subject);
-    const emailBody = encodeURIComponent(
-      `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`,
-    );
-
-    window.location.href = `mailto:raisanjog9840@gmail.com?subject=${emailSubject}&body=${emailBody}`;
   };
 
   const inputStyle =
@@ -42,7 +64,8 @@ const Contact = () => {
           </h1>
 
           <p className="mt-5 text-center">
-            Have a project in mind, a question, or just want to connect? I'd love to hear from you.
+            Have a project in mind, a question, or just want to connect? I'd
+            love to hear from you.
           </p>
         </div>
 
@@ -179,13 +202,14 @@ const Contact = () => {
 
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-white px-5 py-3 font-semibold text-black transition hover:bg-zinc-300"
+              disabled={isSending}
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-white px-5 py-3 font-semibold text-black transition hover:bg-zinc-300 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Send message <span>↗</span>
+              {isSending ? "Sending..." : "Send message ↗"}
             </button>
 
-            <p className="text-center text-xs text-zinc-500">
-              Your email app will open to send the message.
+            <p className="text-center text-xs text-zinc-300" role="status">
+              {status || "I'll get back to you as soon as possible."}
             </p>
           </form>
         </div>
