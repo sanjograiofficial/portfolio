@@ -10,7 +10,7 @@ function SkillCircle({ name, level }: SkillCircleProps) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="relative h-60 w-60">
+      <div className="relative h-44 w-44">
         <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
           {/* Background circle */}
           <circle
