@@ -208,7 +208,7 @@ const Contact = () => {
               {isSending ? "Sending..." : "Send message ↗"}
             </button>
 
-            <p className="text-center text-xs text-zinc-300" role="status">
+            <p className="text-center text-xs" role="status">
               {status || "I'll get back to you as soon as possible."}
             </p>
           </form>
